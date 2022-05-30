@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class SnackMessages {
-  BuildContext _context;
+  final BuildContext _context;
   String _text = '';
   Color _color = Colors.black54;
 

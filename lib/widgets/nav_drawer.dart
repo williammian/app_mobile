@@ -1,6 +1,9 @@
-import 'package:app_mobile/utils/globals.dart';
+import 'package:app_mobile/services/auth_service.dart';
+import 'package:app_mobile/services/token_service.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+final TokenService _tokenService = TokenService();
 
 class NavDrawer extends StatelessWidget {
   const NavDrawer({Key? key}) : super(key: key);
@@ -23,7 +26,7 @@ class NavDrawer extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
                       child: Text(
-                        Globals.shared.usuario!.nome,
+                        _tokenService.getUsuario()!.nome,
                         style: TextStyle(color: Colors.blue, fontSize: 18),
                       ),
                     ),
@@ -53,8 +56,8 @@ class NavDrawer extends StatelessWidget {
   }
 
   _onClickSair(BuildContext context) async {
-    Globals.shared.token = "";
-    Globals.shared.usuario = null;
+    AuthService authService = AuthService();
+    await authService.logout();
     Scaffold.of(context).openEndDrawer();
     Navigator.pushNamed(context, '/login');
   }

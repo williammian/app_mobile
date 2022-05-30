@@ -1,10 +1,8 @@
-import 'dart:convert' show json, base64, ascii;
-
-import 'package:app_mobile/http/http_request.dart';
+import 'package:app_mobile/exceptions/validacao_exception.dart';
 import 'package:app_mobile/messages/snack_messages.dart';
-import 'package:app_mobile/model/usuario_model.dart';
-import 'package:app_mobile/services/storage_service.dart';
-import 'package:app_mobile/utils/globals.dart';
+import 'package:app_mobile/services/auth_service.dart';
+import 'package:app_mobile/services/servidor_service.dart';
+import 'package:app_mobile/utils/error_dialog.dart';
 import 'package:app_mobile/widgets/progress.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -25,7 +23,9 @@ class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  final StorageService _storageService = StorageService();
+  final ServidorService _servidorService = ServidorService();
+  final AuthService _authService = AuthService();
+
   bool _carregando = false;
 
   @override
@@ -152,93 +152,44 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   _load() async {
-    String servidor =
-        await _storageService.getItem(StorageService.KEY_SERVIDOR);
+    String servidor = await _servidorService.getServidorAsync();
     _tedServidor.text = servidor;
   }
 
   _onClickLogin(BuildContext context) async {
     try {
       if (_tedServidor.text.isEmpty) {
-        SnackMessages.of(context)
-            .text('Não foi informado o caminho para o servidor/API.')
-            .warning();
-        return;
+        throw const ValidacaoException(
+            "Não foi informado o caminho para o servidor/API.");
       }
 
       if (_tedLogin.text.isEmpty) {
-        SnackMessages.of(context).text('Não foi informado o e-mail.').warning();
-        return;
+        throw const ValidacaoException("Não foi informado o e-mail.");
       }
 
       if (_tedSenha.text.isEmpty) {
-        SnackMessages.of(context).text('Não foi informada a senha.').warning();
-        return;
+        throw const ValidacaoException("Não foi informada a senha.");
       }
 
-      await _storageService.setItem(
-          StorageService.KEY_SERVIDOR, _tedServidor.text);
-      Globals.shared.servidor = _tedServidor.text;
+      await _servidorService.setServidor(_tedServidor.text);
 
       setState(() {
         _carregando = true;
       });
 
-      _login(_tedLogin.text, _tedSenha.text)
-          .then((body) => _logar(body))
-          .catchError((error) =>
-              SnackMessages.of(context).text(error.toString()).error())
+      _authService
+          .login(_tedLogin.text, _tedSenha.text)
+          .then((value) => _navegarParaHome())
+          .catchError((error) => ErrorDialog.of(context, error).defaultCatch())
           .whenComplete(() => setState(() {
                 _carregando = false;
               }));
     } catch (err) {
-      SnackMessages.of(context).text(err.toString()).error();
+      ErrorDialog.of(context, err).defaultCatch();
     }
   }
 
-  Future<dynamic> _login(String user, String senha) async {
-    final json = {"email": user, "senha": senha};
-
-    HttpRequest request =
-        await HttpRequest.create().endPoint("auth").parseBody(json).post();
-
-    return request.parseResponse();
-  }
-
-  _logar(dynamic body) {
-    _processToken(body);
-  }
-
-  _processToken(dynamic body) {
-    String token = body['token'];
-    if (token.isNotEmpty) {
-      var jwt = token.split(".");
-      if (jwt.length != 3) {
-      } else {
-        var payload =
-            json.decode(ascii.decode(base64.decode(base64.normalize(jwt[1]))));
-        if (DateTime.fromMillisecondsSinceEpoch(payload["exp"] * 1000)
-            .isAfter(DateTime.now())) {
-          //home
-
-          dynamic user = json.decode(payload['sub']);
-          Globals.shared.usuario = Usuario.fromJson(user);
-
-          Globals.shared.token = token;
-          Globals.shared.globalContext = context;
-          Navigator.pushNamed(context, '/home');
-        } else {
-          //login
-          Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) =>
-                  const LoginScreen(message: "Token de acesso inválido.")));
-        }
-      }
-    } else {
-      //login
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (context) =>
-              const LoginScreen(message: "Token de acesso inválido.")));
-    }
+  _navegarParaHome() {
+    Navigator.pushNamed(context, '/home');
   }
 }

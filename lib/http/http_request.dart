@@ -1,13 +1,11 @@
 import 'dart:convert';
-import 'package:app_mobile/screens/login_screen.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
+import 'package:app_mobile/exceptions/authorization_exception.dart';
+import 'package:app_mobile/services/servidor_service.dart';
+import 'package:app_mobile/services/token_service.dart';
 import 'package:http/http.dart' as http;
 
-import 'package:app_mobile/utils/globals.dart';
-
 class HttpRequest {
-  String _server = Globals.shared.servidor;
+  late String _server;
   late String _endPoint;
   late String _body;
   Map<String, String> _headers = {"Content-type": "application/json"};
@@ -19,8 +17,15 @@ class HttpRequest {
 
   static HttpRequest create() {
     HttpRequest request = HttpRequest();
-    if (Globals.shared.token.isNotEmpty) {
-      request._headers["Authorization"] = "Bearer " + Globals.shared.token;
+    ServidorService servidorService = ServidorService();
+    if (!servidorService.hasServidor()) {
+      throw Exception("Não foi encontrado o servidor.");
+    }
+    request.server(servidorService.getServidor());
+
+    TokenService tokenService = TokenService();
+    if (tokenService.hasToken()) {
+      request._headers["Authorization"] = "Bearer " + tokenService.getToken();
     }
     return request;
   }
@@ -128,10 +133,8 @@ class HttpRequest {
     if (response.statusCode >= 500) {
       throw Exception("Erro ao efetuar processamento no servidor/API.");
     } else if (response.statusCode == 401 || response.statusCode == 403) {
-      Navigator.of(Globals.shared.globalContext).push(MaterialPageRoute(
-          builder: (context) => const LoginScreen(
-              message:
-                  "Você não tem permissão para executar esta ação ou token de acesso inválido.")));
+      throw const AuthorizationException(
+          "Você não tem permissão para executar esta ação ou token de acesso inválido.");
     } else if (response.statusCode < 200 || response.statusCode > 299) {
       String msg = "Ocorreu um erro ao processar a sua solicitação.";
 
