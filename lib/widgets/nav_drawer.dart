@@ -1,4 +1,5 @@
 import 'package:app_mobile/services/auth_service.dart';
+import 'package:app_mobile/services/item_service.dart';
 import 'package:app_mobile/services/token_service.dart';
 import 'package:app_mobile/utils/error_dialog.dart';
 import 'package:flutter/material.dart';
@@ -64,7 +65,11 @@ class NavDrawer extends StatelessWidget {
     }
   }
 
-  _onClickItens(BuildContext context) async {}
+  _onClickItens(BuildContext context) async {
+    try {} catch (err) {
+      ErrorDialog.of(context, err).defaultCatch();
+    }
+  }
 
   _onClickSair(BuildContext context) async {
     try {

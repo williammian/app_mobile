@@ -1,5 +1,5 @@
 import 'package:app_mobile/http/http_request.dart';
-import 'package:app_mobile/model/usuario_model.dart';
+import 'package:app_mobile/models/usuario_model.dart';
 import 'package:app_mobile/services/token_service.dart';
 
 class AuthService {

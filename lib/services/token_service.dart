@@ -1,4 +1,4 @@
-import 'package:app_mobile/model/usuario_model.dart';
+import 'package:app_mobile/models/usuario_model.dart';
 import 'package:app_mobile/services/storage_service.dart';
 import 'dart:convert' show json, base64, ascii;
 

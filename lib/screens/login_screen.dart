@@ -1,5 +1,4 @@
 import 'package:app_mobile/exceptions/validacao_exception.dart';
-import 'package:app_mobile/messages/snack_messages.dart';
 import 'package:app_mobile/services/auth_service.dart';
 import 'package:app_mobile/services/servidor_service.dart';
 import 'package:app_mobile/utils/error_dialog.dart';

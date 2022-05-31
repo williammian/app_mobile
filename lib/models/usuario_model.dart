@@ -1,4 +1,4 @@
-import 'package:app_mobile/model/perfil_model.dart';
+import 'package:app_mobile/models/perfil_model.dart';
 
 class Usuario {
   int id;
@@ -14,7 +14,8 @@ class Usuario {
         email = json['email'],
         perfis = jsonToPerfis(json['perfis']);
 
-  Map<String, dynamic> toJson() => {'id': id, 'nome': nome, 'email': email};
+  Map<String, dynamic> toJson() =>
+      {'id': id, 'nome': nome, 'email': email, 'perfis': perfis};
 
   static jsonToPerfis(json) {
     List<Perfil> perfisList = [];
