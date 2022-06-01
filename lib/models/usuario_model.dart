@@ -25,4 +25,17 @@ class Usuario {
     });
     return perfisList;
   }
+
+  @override
+  String toString() {
+    String str = 'Usuario{id: $id, nome: $nome, email: $email}';
+    str = str + "\nperfis[";
+    if (perfis.isNotEmpty) {
+      for (Perfil perfil in perfis) {
+        str = str + "\n" + perfil.toString();
+      }
+    }
+    str = str + "\n]";
+    return str;
+  }
 }

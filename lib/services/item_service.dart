@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:app_mobile/http/http_request.dart';
+import 'package:app_mobile/models/item_model.dart';
 
 class ItemService {
   final String urn = "itens";
@@ -8,24 +11,26 @@ class ItemService {
     url = url + "&page=" + itemFiltro.page.toString();
     url = url + "&size=" + itemFiltro.size.toString();
     HttpRequest request = await HttpRequest.create().endPoint(url).get();
-    dynamic body = request.parseResponse();
-    return body;
+    dynamic page = request.parseResponse();
+    return page;
   }
 
-  Future<dynamic> adicionar(dynamic item) async {
+  Future<Item> adicionar(Item item) async {
     HttpRequest request =
         await HttpRequest.create().endPoint(urn).parseBody(item).post();
-    dynamic body = request.parseResponse();
-    return body;
+    dynamic json = request.parseResponse();
+    Item itemAdicionado = Item.fromJson(json);
+    return itemAdicionado;
   }
 
-  Future<dynamic> atualizar(dynamic item) async {
+  Future<Item> atualizar(Item item) async {
     HttpRequest request = await HttpRequest.create()
-        .endPoint(urn + "/" + item['id'])
+        .endPoint(urn + "/" + item.id.toString())
         .parseBody(item)
         .put();
-    dynamic body = request.parseResponse();
-    return body;
+    dynamic json = request.parseResponse();
+    Item itemAtualizado = Item.fromJson(json);
+    return itemAtualizado;
   }
 
   Future<void> excluir(int id) async {
