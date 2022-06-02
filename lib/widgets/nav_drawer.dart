@@ -64,7 +64,13 @@ class NavDrawer extends StatelessWidget {
     }
   }
 
-  _onClickItens(BuildContext context) async {}
+  _onClickItens(BuildContext context) async {
+    try {
+      Navigator.pushNamed(context, '/itens');
+    } catch (err) {
+      ErrorDialog.of(context, err).defaultCatch();
+    }
+  }
 
   _onClickSair(BuildContext context) async {
     try {

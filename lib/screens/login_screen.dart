@@ -135,7 +135,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 backgroundColor:
                                     MaterialStateProperty.all(Colors.blue),
                               ),
-                              onPressed: () => _onClickLogin(context),
+                              onPressed: () => _onClickLogin(),
                             ),
                           ),
                         )),
@@ -155,7 +155,7 @@ class _LoginScreenState extends State<LoginScreen> {
     _tedServidor.text = servidor;
   }
 
-  _onClickLogin(BuildContext context) async {
+  _onClickLogin() async {
     try {
       if (_tedServidor.text.isEmpty) {
         throw const ValidacaoException(

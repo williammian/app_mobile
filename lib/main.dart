@@ -1,4 +1,5 @@
 import 'package:app_mobile/screens/home_screen.dart';
+import 'package:app_mobile/screens/itens/itens_list_screen.dart';
 import 'package:app_mobile/screens/login_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,7 @@ class MyApp extends StatelessWidget {
         routes: {
           '/login': (context) => const LoginScreen(message: ''),
           '/home': (context) => const HomeScreen(),
+          '/itens': (context) => const ItensListScreen()
         });
   }
 }

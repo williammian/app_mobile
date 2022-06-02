@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app_mobile/http/http_request.dart';
 import 'package:app_mobile/models/item_model.dart';
 

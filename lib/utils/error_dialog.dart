@@ -17,7 +17,7 @@ class ErrorDialog {
   void defaultCatch() {
     if (_err is AuthorizationException) {
       Navigator.of(_context).push(MaterialPageRoute(
-          builder: (context) => const LoginScreen(message: "")));
+          builder: (context) => LoginScreen(message: _err.toString())));
     } else if (_err is ValidacaoException) {
       SnackMessages.of(_context).text(_err.toString()).warning();
     } else {
