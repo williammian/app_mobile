@@ -13,10 +13,10 @@ class ItensListScreen extends StatefulWidget {
 }
 
 class _ItensListScreenState extends State<ItensListScreen> {
-  ItemService itemService = ItemService();
+  ItemService _itemService = ItemService();
+  ItemFiltro _itemFiltro = ItemFiltro();
 
-  int _page = 0;
-  int _size = 20;
+  TextEditingController _tedCodigoDescricao = TextEditingController();
 
   bool _hasNextPage = true;
   bool _isFirstLoadRunning = false;
@@ -24,22 +24,30 @@ class _ItensListScreenState extends State<ItensListScreen> {
 
   late List<Item> _itens;
 
-  void _firstLoad() async {
+  void _firstLoad(bool inLoad) async {
     setState(() {
       _isFirstLoadRunning = true;
     });
     try {
-      ItemFiltro itemFiltro = ItemFiltro();
-      itemFiltro.page = _page;
-      itemFiltro.size = _size;
-      dynamic res = await itemService.listar(itemFiltro);
+      String codigoDescricao = '';
+      if (_tedCodigoDescricao.text.isNotEmpty) {
+        codigoDescricao = _tedCodigoDescricao.text;
+      }
+      _itemFiltro.codigoDescricao = codigoDescricao;
+      _itemFiltro.page = 0;
+
+      dynamic res = await _itemService.listar(_itemFiltro);
       List<dynamic> content = res['content'];
 
       setState(() {
         _itens = content.map((dynamic json) => Item.fromJson(json)).toList();
       });
     } catch (err) {
-      print(err.toString());
+      if (inLoad) {
+        print(err.toString());
+      } else {
+        ErrorDialog.of(context, err).defaultCatch();
+      }
     }
 
     setState(() {
@@ -55,12 +63,15 @@ class _ItensListScreenState extends State<ItensListScreen> {
       setState(() {
         _isLoadMoreRunning = true;
       });
-      _page += 1;
+      _itemFiltro.page += 1;
       try {
-        ItemFiltro itemFiltro = ItemFiltro();
-        itemFiltro.page = _page;
-        itemFiltro.size = _size;
-        dynamic res = await itemService.listar(itemFiltro);
+        String codigoDescricao = '';
+        if (_tedCodigoDescricao.text.isNotEmpty) {
+          codigoDescricao = _tedCodigoDescricao.text;
+        }
+        _itemFiltro.codigoDescricao = codigoDescricao;
+
+        dynamic res = await _itemService.listar(_itemFiltro);
         List<dynamic> content = res['content'];
 
         if (content.isNotEmpty) {
@@ -88,7 +99,7 @@ class _ItensListScreenState extends State<ItensListScreen> {
   @override
   void initState() {
     super.initState();
-    _firstLoad();
+    _firstLoad(true);
     _controller = ScrollController()..addListener(_loadMore);
   }
 
@@ -108,6 +119,33 @@ class _ItensListScreenState extends State<ItensListScreen> {
           ? Progress()
           : Column(
               children: [
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: TextField(
+                    textInputAction: TextInputAction.search,
+                    onSubmitted: (value) {
+                      _hasNextPage = true;
+                      _firstLoad(false);
+                    },
+                    controller: _tedCodigoDescricao,
+                    decoration: InputDecoration(
+                      labelText: 'Código ou Descrição',
+                      suffixIcon: IconButton(
+                        icon: const Icon(Icons.search),
+                        onPressed: () {
+                          _hasNextPage = true;
+                          _firstLoad(false);
+                        },
+                      ),
+                    ),
+                    onChanged: (value) {
+                      setState(() {
+                        _hasNextPage = true;
+                        _itens = [];
+                      });
+                    },
+                  ),
+                ),
                 Expanded(
                   child: ListView.builder(
                     controller: _controller,
