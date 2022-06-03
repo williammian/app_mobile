@@ -19,16 +19,17 @@ class NavDrawer extends StatelessWidget {
               child: Column(
             children: [
               Padding(
-                padding: EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 8.0),
+                padding: const EdgeInsets.fromLTRB(0.0, 4.0, 0.0, 8.0),
                 child: Row(
                   children: [
-                    Icon(FontAwesomeIcons.userCircle,
+                    const Icon(FontAwesomeIcons.user,
                         size: 18.0, color: Colors.blue),
                     Padding(
-                      padding: EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
+                      padding: const EdgeInsets.fromLTRB(8.0, 0.0, 0.0, 0.0),
                       child: Text(
                         _tokenService.getUsuario()!.nome,
-                        style: TextStyle(color: Colors.blue, fontSize: 18),
+                        style:
+                            const TextStyle(color: Colors.blue, fontSize: 18),
                       ),
                     ),
                   ],
@@ -38,18 +39,18 @@ class NavDrawer extends StatelessWidget {
           )),
         ),
         ListTile(
-          leading: Icon(FontAwesomeIcons.home),
-          title: Text('Início'),
+          leading: const Icon(FontAwesomeIcons.house),
+          title: const Text('Início'),
           onTap: () => _onClickInicio(context),
         ),
         ListTile(
-          leading: Icon(FontAwesomeIcons.boxesStacked),
-          title: Text('Itens'),
+          leading: const Icon(FontAwesomeIcons.boxesStacked),
+          title: const Text('Itens'),
           onTap: () => _onClickItens(context),
         ),
         ListTile(
-          leading: Icon(FontAwesomeIcons.powerOff),
-          title: Text('Sair'),
+          leading: const Icon(FontAwesomeIcons.powerOff),
+          title: const Text('Sair'),
           onTap: () => _onClickSair(context),
         ),
       ]),

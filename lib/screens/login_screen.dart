@@ -179,10 +179,10 @@ class _LoginScreenState extends State<LoginScreen> {
       _authService
           .login(_tedLogin.text, _tedSenha.text)
           .then((value) => _navegarParaHome())
-          .catchError((error) => ErrorDialog.of(context, error).defaultCatch())
           .whenComplete(() => setState(() {
                 _carregando = false;
-              }));
+              }))
+          .catchError((error) => ErrorDialog.of(context, error).defaultCatch());
     } catch (err) {
       ErrorDialog.of(context, err).defaultCatch();
     }

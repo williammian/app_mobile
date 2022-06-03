@@ -1,4 +1,5 @@
-import 'package:app_mobile/messages/alert_messages.dart';
+import 'package:app_mobile/messages/confirm_messages.dart';
+import 'package:app_mobile/messages/snack_messages.dart';
 import 'package:app_mobile/models/item_model.dart';
 import 'package:app_mobile/services/item_service.dart';
 import 'package:app_mobile/utils/error_dialog.dart';
@@ -13,10 +14,10 @@ class ItensListScreen extends StatefulWidget {
 }
 
 class _ItensListScreenState extends State<ItensListScreen> {
-  ItemService _itemService = ItemService();
-  ItemFiltro _itemFiltro = ItemFiltro();
+  final ItemService _itemService = ItemService();
+  final ItemFiltro _itemFiltro = ItemFiltro();
 
-  TextEditingController _tedCodigoDescricao = TextEditingController();
+  final TextEditingController _tedCodigoDescricao = TextEditingController();
 
   bool _hasNextPage = true;
   bool _isFirstLoadRunning = false;
@@ -76,8 +77,9 @@ class _ItensListScreenState extends State<ItensListScreen> {
 
         if (content.isNotEmpty) {
           setState(() {
-            _itens =
+            List<Item> itensPage =
                 content.map((dynamic json) => Item.fromJson(json)).toList();
+            _itens.addAll(itensPage);
           });
         } else {
           setState(() {
@@ -114,6 +116,9 @@ class _ItensListScreenState extends State<ItensListScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Itens'),
+        actions: [
+          IconButton(icon: const Icon(Icons.add), onPressed: () => _adicionar())
+        ],
       ),
       body: _isFirstLoadRunning
           ? Progress()
@@ -156,6 +161,9 @@ class _ItensListScreenState extends State<ItensListScreen> {
                       child: ListTile(
                         title: Text(_itens[index].codigo),
                         subtitle: Text(_itens[index].descricao),
+                        trailing: const Icon(Icons.edit),
+                        onTap: () => _alterar(_itens[index]),
+                        onLongPress: () => _excluir(_itens[index]),
                       ),
                     ),
                   ),
@@ -172,5 +180,58 @@ class _ItensListScreenState extends State<ItensListScreen> {
               ],
             ),
     );
+  }
+
+  void _adicionar() {
+    try {
+      //adicionar
+      SnackMessages.of(context).text("adicionar").show();
+    } catch (err) {
+      ErrorDialog.of(context, err).defaultCatch();
+    }
+  }
+
+  void _alterar(Item item) {
+    try {
+      //alterar
+      SnackMessages.of(context).text("alterar").show();
+    } catch (err) {
+      ErrorDialog.of(context, err).defaultCatch();
+    }
+  }
+
+  void _excluir(Item item) {
+    try {
+      String codigo = item.codigo;
+      String descricao = item.descricao;
+      ConfirmMessages.of(context)
+          .title("Exclusão de Item")
+          .text("Confirma a exclusão do item $codigo $descricao ?")
+          .show()
+          .then((value) {
+        if (value) {
+          setState(() {
+            _isFirstLoadRunning = true;
+          });
+          _itemService.excluir(item.id).whenComplete(() {
+            setState(() {
+              for (Item itemLista in _itens) {
+                if (itemLista.id == item.id) {
+                  _itens.remove(itemLista);
+                  break;
+                }
+              }
+              _isFirstLoadRunning = false;
+            });
+            SnackMessages.of(context)
+                .text("Item excluído com sucesso")
+                .success();
+          }).catchError(
+              (error) => ErrorDialog.of(context, error).defaultCatch());
+        }
+      });
+    } catch (err) {
+      ErrorDialog.of(context, err).defaultCatch();
+    }
   }
 }

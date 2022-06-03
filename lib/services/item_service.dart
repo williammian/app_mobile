@@ -1,6 +1,12 @@
 import 'package:app_mobile/http/http_request.dart';
 import 'package:app_mobile/models/item_model.dart';
 
+class ItemFiltro {
+  String codigoDescricao = "";
+  int page = 0;
+  int size = 20;
+}
+
 class ItemService {
   final String urn = "itens";
 
@@ -31,13 +37,7 @@ class ItemService {
     return itemAtualizado;
   }
 
-  Future<void> excluir(int id) async {
+  Future<void> excluir(int? id) async {
     await HttpRequest.create().endPoint(urn + "/" + id.toString()).delete();
   }
-}
-
-class ItemFiltro {
-  String codigoDescricao = "";
-  int page = 0;
-  int size = 20;
 }
