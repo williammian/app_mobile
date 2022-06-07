@@ -1,6 +1,7 @@
 import 'package:app_mobile/messages/confirm_messages.dart';
 import 'package:app_mobile/messages/snack_messages.dart';
 import 'package:app_mobile/models/item_model.dart';
+import 'package:app_mobile/screens/itens/itens_cad_screen.dart';
 import 'package:app_mobile/services/item_service.dart';
 import 'package:app_mobile/utils/error_dialog.dart';
 import 'package:app_mobile/widgets/progress.dart';
@@ -184,8 +185,8 @@ class _ItensListScreenState extends State<ItensListScreen> {
 
   void _adicionar() {
     try {
-      //adicionar
-      SnackMessages.of(context).text("adicionar").show();
+      Item novoItem = Item.create();
+      _abrirCadItem(novoItem);
     } catch (err) {
       ErrorDialog.of(context, err).defaultCatch();
     }
@@ -193,11 +194,29 @@ class _ItensListScreenState extends State<ItensListScreen> {
 
   void _alterar(Item item) {
     try {
-      //alterar
-      SnackMessages.of(context).text("alterar").show();
+      _abrirCadItem(item);
     } catch (err) {
       ErrorDialog.of(context, err).defaultCatch();
     }
+  }
+
+  void _abrirCadItem(Item item) {
+    Navigator.of(context)
+        .push(
+            MaterialPageRoute(builder: (context) => ItensCadScreen(item: item)))
+        .then((value) {
+      if (value > 0) {
+        _hasNextPage = true;
+        _firstLoad(false);
+        String msg = "";
+        if (value == 1) {
+          msg = "Item cadastrado com sucesso";
+        } else if (value == 2) {
+          msg = "Item alterado com sucesso";
+        }
+        SnackMessages.of(context).text(msg).success();
+      }
+    });
   }
 
   void _excluir(Item item) {

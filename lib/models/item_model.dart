@@ -8,7 +8,7 @@ class Item {
   DateTime dataCadastro;
   bool ativo;
   String abc;
-  double preco;
+  num preco;
 
   Item(this.id, this.tipo, this.codigo, this.descricao, this.dataCadastro,
       this.ativo, this.abc, this.preco);
@@ -37,5 +37,9 @@ class Item {
   @override
   String toString() {
     return 'Item{id: $id, tipo: $tipo, codigo: $codigo, descricao: $descricao, dataCadastro: $dataCadastro, ativo: $ativo, abc: $abc, preco: $preco}';
+  }
+
+  static Item create() {
+    return Item(null, 0, "", "", DateTime.now(), true, "A", 0.00);
   }
 }

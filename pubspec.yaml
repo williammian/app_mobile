@@ -38,6 +38,10 @@ dependencies:
   localstorage: ^4.0.0+1
   http:
   intl: 0.17.0
+  datetime_picker_formfield: ^2.0.0
+
+  flutter_localizations:
+    sdk: flutter
 
 dev_dependencies:
   flutter_test:

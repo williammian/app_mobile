@@ -2,6 +2,7 @@ import 'package:app_mobile/screens/home_screen.dart';
 import 'package:app_mobile/screens/itens/itens_list_screen.dart';
 import 'package:app_mobile/screens/login_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 void main() {
   runApp(const MyApp());
@@ -13,6 +14,11 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+        localizationsDelegates: [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate
+        ],
+        supportedLocales: const [Locale('pt', 'BR')],
         title: 'App Mobile',
         theme: ThemeData(primarySwatch: Colors.blue),
         home: const LoginScreen(message: ''),
