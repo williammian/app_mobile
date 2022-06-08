@@ -1,0 +1,29 @@
+Build app_mobile
+
+--------------------------------------------
+
+Alterar a versão
+
+Antes de compilar é necessário alterar a versão no arquivo pubspec.yaml
+
+    tag version
+
+--------------------------------------------
+
+Compilar app_mobile
+
+Seguir a documentação do Flutter a partir do “Create an upload keystore”.
+- https://docs.flutter.dev/deployment/android#create-an-upload-keystore
+- https://docs.flutter.dev/deployment/android#reference-the-keystore-from-the-app
+- https://docs.flutter.dev/deployment/android#configure-signing-in-gradle
+
+Após configurado, buildar o App no formato .aab para publicar na Play Store.
+- https://docs.flutter.dev/deployment/android#build-an-app-bundle
+
+---------------------------------------------
+
+Deploy app_mobile no Google Play
+
+Acessar: https://play.google.com/console
+
+---------------------------------------------
