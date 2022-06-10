@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.ACCESS_NOTIFICATION_POLICY"/>
 
    <application
-        android:label="app_mobile"
+        android:label="App Mobile"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
