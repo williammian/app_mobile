@@ -49,6 +49,11 @@ class NavDrawer extends StatelessWidget {
           onTap: () => _onClickItens(context),
         ),
         ListTile(
+          leading: const Icon(FontAwesomeIcons.clipboardQuestion),
+          title: const Text('Sobre'),
+          onTap: () => _onClickAbout(context),
+        ),
+        ListTile(
           leading: const Icon(FontAwesomeIcons.powerOff),
           title: const Text('Sair'),
           onTap: () => _onClickSair(context),
@@ -73,6 +78,14 @@ class NavDrawer extends StatelessWidget {
     }
   }
 
+  _onClickAbout(BuildContext context) async {
+    try {
+      Navigator.pushNamed(context, '/about');
+    } catch (err) {
+      ErrorDialog.of(context, err).defaultCatch();
+    }
+  }
+
   _onClickSair(BuildContext context) async {
     try {
       AuthService authService = AuthService();
@@ -83,52 +96,4 @@ class NavDrawer extends StatelessWidget {
       ErrorDialog.of(context, err).defaultCatch();
     }
   }
-
-  // teste(BuildContext context) {
-  //   try {
-  // ItemService itemService = ItemService();
-
-  // itemService
-  //     .excluir(16)
-  //     .then((value) => print('item excluído'))
-  //     .catchError((error) async {
-  //   ErrorDialog.of(context, error).defaultCatch();
-  // });
-
-  // Item item =
-  //     Item(16, 1, '997', 'Teste Y', DateTime.now(), true, 'B', 2.77);
-  // itemService
-  //     .atualizar(item)
-  //     .then((itemAtualizado) => print(itemAtualizado))
-  //     .catchError((error) async {
-  //   ErrorDialog.of(context, error).defaultCatch();
-  // });
-
-  // Item item =
-  //     Item(null, 1, '997', 'Teste X', DateTime.now(), true, 'A', 2.66);
-  // itemService
-  //     .adicionar(item)
-  //     .then((itemAdicionado) => print(itemAdicionado))
-  //     .catchError((error) async {
-  //   ErrorDialog.of(context, error).defaultCatch();
-  // });
-
-  // itemService.listar(ItemFiltro()).then((page) {
-  //   int totalPages = page['totalPages'];
-  //   print('totalPages: $totalPages');
-  //   int number = page['number'];
-  //   print('number: $number');
-  //   List<dynamic> content = page['content'];
-  //   List<Item> itens =
-  //       content.map((dynamic json) => Item.fromJson(json)).toList();
-  //   for (Item item in itens) {
-  //     print(item.toString());
-  //   }
-  // }).catchError((error) async {
-  //   ErrorDialog.of(context, error).defaultCatch();
-  // });
-  //   } catch (err) {
-  //     ErrorDialog.of(context, err).defaultCatch();
-  //   }
-  // }
 }

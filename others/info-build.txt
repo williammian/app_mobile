@@ -160,3 +160,23 @@ ios/Runner/Info.plist
 <string>your_app_name</string>
 
 ----------------------------------------------
+
+How to Get Build and Version Number of a Flutter App ?
+
+https://flutteragency.com/how-to-get-build-and-version-number-of-a-flutter-app/
+
+----------------------------------------------
+
+“Incompatible classes were found in dependencies. Remove them from the classpath or use '-Xskip-metadata-version-check' to suppress errors”
+
+what solved my problem is changing this at your_app/android/build.gradle
+
+from
+
+ext.kotlin_version = '1.3.50'
+
+to
+
+ext.kotlin_version = '1.5.31'
+
+----------------------------------------------
