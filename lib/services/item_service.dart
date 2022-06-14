@@ -19,6 +19,14 @@ class ItemService {
     return page;
   }
 
+  Future<Item> buscar(int id) async {
+    String url = urn + "/" + id.toString();
+    HttpRequest request = await HttpRequest.create().endPoint(url).get();
+    dynamic json = request.parseResponse();
+    Item item = Item.fromJson(json);
+    return item;
+  }
+
   Future<Item> adicionar(Item item) async {
     HttpRequest request =
         await HttpRequest.create().endPoint(urn).parseBody(item).post();

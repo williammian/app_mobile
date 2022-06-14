@@ -185,8 +185,7 @@ class _ItensListScreenState extends State<ItensListScreen> {
 
   void _adicionar() {
     try {
-      Item novoItem = Item.create();
-      _abrirCadItem(novoItem);
+      _abrirCadItem(null);
     } catch (err) {
       ErrorDialog.of(context, err).defaultCatch();
     }
@@ -194,27 +193,28 @@ class _ItensListScreenState extends State<ItensListScreen> {
 
   void _alterar(Item item) {
     try {
-      _abrirCadItem(item);
+      _abrirCadItem(item.id);
     } catch (err) {
       ErrorDialog.of(context, err).defaultCatch();
     }
   }
 
-  void _abrirCadItem(Item item) {
+  void _abrirCadItem(int? id) {
     Navigator.of(context)
-        .push(
-            MaterialPageRoute(builder: (context) => ItensCadScreen(item: item)))
+        .push(MaterialPageRoute(builder: (context) => ItensCadScreen(id: id)))
         .then((value) {
-      if (value > 0) {
-        _hasNextPage = true;
-        _firstLoad(false);
-        String msg = "";
-        if (value == 1) {
-          msg = "Item cadastrado com sucesso";
-        } else if (value == 2) {
-          msg = "Item alterado com sucesso";
+      if (value != null) {
+        if (value > 0) {
+          _hasNextPage = true;
+          _firstLoad(false);
+          String msg = "";
+          if (value == 1) {
+            msg = "Item cadastrado com sucesso";
+          } else if (value == 2) {
+            msg = "Item alterado com sucesso";
+          }
+          SnackMessages.of(context).text(msg).success();
         }
-        SnackMessages.of(context).text(msg).success();
       }
     });
   }

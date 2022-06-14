@@ -1,3 +1,4 @@
+import 'package:app_mobile/exceptions/validacao_exception.dart';
 import 'package:app_mobile/models/item_model.dart';
 import 'package:app_mobile/services/item_service.dart';
 import 'package:app_mobile/utils/error_dialog.dart';
@@ -8,17 +9,18 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class ItensCadScreen extends StatefulWidget {
-  const ItensCadScreen({Key? key, required this.item}) : super(key: key);
+  ItensCadScreen({Key? key, required this.id}) : super(key: key);
 
-  final Item item;
+  int? id;
 
   @override
-  State<ItensCadScreen> createState() => _ItensCadScreenState(item);
+  State<ItensCadScreen> createState() => _ItensCadScreenState(id);
 }
 
 class _ItensCadScreenState extends State<ItensCadScreen> {
   final ItemService _itemService = ItemService();
-  final Item item;
+  int? id;
+  late Item item;
 
   int _tedTipo = 0;
   final TextEditingController _tedCodigo = TextEditingController();
@@ -30,14 +32,39 @@ class _ItensCadScreenState extends State<ItensCadScreen> {
 
   bool _carregando = false;
 
-  _ItensCadScreenState(this.item);
+  _ItensCadScreenState(this.id);
+
+  @override
+  initState() {
+    super.initState();
+    _carregarItem(id);
+  }
+
+  Future<void> _carregarItem(int? id) async {
+    if (id == null) {
+      setState(() {
+        item = Item.create();
+        _exibirRegistro();
+        _carregando = false;
+      });
+    } else {
+      setState(() {
+        _carregando = true;
+      });
+      await _itemService.buscar(id).then((value) {
+        setState(() {
+          item = value;
+          _exibirRegistro();
+          _carregando = false;
+        });
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    bool isNew = item.id == null;
+    bool isNew = id == null;
     String tituloForm = isNew ? "Novo Item" : "Alteração de Item";
-
-    _exibirRegistro();
 
     return Scaffold(
         appBar: AppBar(
